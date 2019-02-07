@@ -7,7 +7,7 @@
 !Gopkg.toml
 !config.example.toml
 *.yml
-!gitlab-ci.yml
+!.travis.yml
 !config.example.yml
 
 # build
