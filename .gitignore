@@ -1,0 +1,16 @@
+# Editors
+/.idea
+/.vscode
+
+# configuration
+*.toml
+!Gopkg.toml
+!config.example.toml
+*.yml
+!gitlab-ci.yml
+!config.example.yml
+
+# build
+/bin
+/vendor
+/out
