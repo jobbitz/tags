@@ -1,4 +1,6 @@
 # Tags
+[![Build Status](https://travis-ci.com/jobbitz/tags.svg?branch=master)](https://travis-ci.com/jobbitz/tags)
+
 An interface package for parsing tags in structs simplifying tag based golang reflections
 
 ## Usage
