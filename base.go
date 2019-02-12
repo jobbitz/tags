@@ -15,13 +15,22 @@ var (
 
 // Parse parses the given tag values using the given parser
 func Parse(obj interface{}, tagname string, parser func(string) (string, error)) error {
+	return parse(obj, tagname, parser, false)
+}
+
+// ParseHard parses the giver tag values using the given parser and overrides the previous values
+func ParseHard(obj interface{}, tagname string, parser func(string) (string, error)) error {
+	return parse(obj, tagname, parser, true)
+}
+
+func parse(obj interface{}, tagname string, parser func(string) (string, error), override bool) error {
 	parseFunc := func(tag string, f *reflect.Value) error {
 		value, err := parser(tag)
 		if err != nil {
 			return err
 		}
 
-		if err := decode(f, value); err != nil {
+		if err := decode(f, value, false); err != nil {
 			return err
 		}
 		return nil
@@ -89,13 +98,17 @@ func exec(obj interface{}, tagname string, action func(string, *reflect.Value) e
 	return nil
 }
 
-func decode(f *reflect.Value, tv string) error { // nolint: gocyclo
+func decode(f *reflect.Value, tv string, override bool) error { // nolint: gocyclo
 	if tv == `` {
 		return nil
 	}
 
 	switch f.Kind() {
 	case reflect.Bool:
+		if f.Bool() && !override {
+			return nil
+		}
+
 		v, err := strconv.ParseBool(tv)
 		if err != nil {
 			return err
@@ -103,6 +116,10 @@ func decode(f *reflect.Value, tv string) error { // nolint: gocyclo
 		f.SetBool(v)
 
 	case reflect.Float32, reflect.Float64:
+		if f.Float() != 0 && !override {
+			return nil
+		}
+
 		bits := f.Type().Bits()
 		v, err := strconv.ParseFloat(tv, bits)
 		if err != nil {
@@ -118,6 +135,10 @@ func decode(f *reflect.Value, tv string) error { // nolint: gocyclo
 			}
 			f.SetInt(int64(v))
 		} else {
+			if f.Int() != 0 && !override {
+				return nil
+			}
+
 			bits := f.Type().Bits()
 			v, err := strconv.ParseInt(tv, 0, bits)
 			if err != nil {
@@ -127,6 +148,10 @@ func decode(f *reflect.Value, tv string) error { // nolint: gocyclo
 		}
 
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if f.Uint() != 0 && !override {
+			return nil
+		}
+
 		bits := f.Type().Bits()
 		v, err := strconv.ParseUint(tv, 0, bits)
 		if err != nil {
@@ -135,15 +160,23 @@ func decode(f *reflect.Value, tv string) error { // nolint: gocyclo
 		f.SetUint(v)
 
 	case reflect.String:
+		if f.String() != `` && !override {
+			return nil
+		}
+
 		f.SetString(tv)
 
 	case reflect.Slice:
+		if f.Len() != 0 && !override {
+			return nil
+		}
+
 		parts := strings.Split(tv, `;`)
 		slice := reflect.MakeSlice(f.Type(), len(parts), len(parts))
 		for i, part := range parts {
 			part = strings.TrimSpace(part)
 			e := slice.Index(i)
-			if err := decode(&e, part); err != nil {
+			if err := decode(&e, part, override); err != nil {
 				return err
 			}
 		}

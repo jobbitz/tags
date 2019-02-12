@@ -6,11 +6,11 @@ This parser sets the given default values in the structs properties
 func ReadConfig(rd io.Reader) Config {
 	var conf Config
 
-	if err := defaults.Parse(&conf); err != nil {
+	if err := toml.Unmarshal(rd, conf); err != nil {
 		panic(err)
 	}
 
-	if err := toml.Unmarshal(rd, conf); err != nil {
+	if err := defaults.Parse(&conf); err != nil {
 		panic(err)
 	}
 
