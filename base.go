@@ -1,7 +1,7 @@
 package tags
 
 import (
-	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -10,7 +10,7 @@ import (
 
 var (
 	// ErrPtr returns if the given object is not a pointer
-	ErrPtr = errors.New(`Given object is not a pointer or a struct`)
+	ErrPtr = fmt.Errorf(`Given object is not a pointer or a struct`) // nolint: staticcheck
 )
 
 // Parse parses the given tag values using the given parser
@@ -24,19 +24,13 @@ func ParseHard(obj interface{}, tagname string, parser func(string) (string, err
 }
 
 func parse(obj interface{}, tagname string, parser func(string) (string, error), override bool) error {
-	parseFunc := func(tag string, f *reflect.Value) error {
+	return exec(obj, tagname, func(tag string, f *reflect.Value) error {
 		value, err := parser(tag)
 		if err != nil {
 			return err
 		}
-
-		if err := decode(f, value, false); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	return exec(obj, tagname, parseFunc)
+		return decode(f, value, override)
+	})
 }
 
 // Scan gives the given tag value and the value in that stuct property to the given scanner
@@ -102,10 +96,11 @@ func decode(f *reflect.Value, tv string, override bool) error { // nolint: gocyc
 	if tv == `` {
 		return nil
 	}
-
+	currentVal := fmt.Sprint(f.Interface())
+	fmt.Println(currentVal)
 	switch f.Kind() {
 	case reflect.Bool:
-		if f.Bool() && !override {
+		if currentVal != `false` && !override {
 			return nil
 		}
 
@@ -116,7 +111,7 @@ func decode(f *reflect.Value, tv string, override bool) error { // nolint: gocyc
 		f.SetBool(v)
 
 	case reflect.Float32, reflect.Float64:
-		if f.Float() != 0 && !override {
+		if currentVal != `0` && !override { // nolint: goconst
 			return nil
 		}
 
@@ -135,7 +130,7 @@ func decode(f *reflect.Value, tv string, override bool) error { // nolint: gocyc
 			}
 			f.SetInt(int64(v))
 		} else {
-			if f.Int() != 0 && !override {
+			if currentVal != `0` && !override { // nolint: goconst
 				return nil
 			}
 
@@ -148,7 +143,7 @@ func decode(f *reflect.Value, tv string, override bool) error { // nolint: gocyc
 		}
 
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		if f.Uint() != 0 && !override {
+		if currentVal != `0` && !override { // nolint: goconst
 			return nil
 		}
 
@@ -160,14 +155,13 @@ func decode(f *reflect.Value, tv string, override bool) error { // nolint: gocyc
 		f.SetUint(v)
 
 	case reflect.String:
-		if f.String() != `` && !override {
+		if currentVal != `` && !override {
 			return nil
 		}
-
 		f.SetString(tv)
 
 	case reflect.Slice:
-		if f.Len() != 0 && !override {
+		if currentVal != `[]` && !override {
 			return nil
 		}
 

@@ -19,25 +19,23 @@ func main() {
 }
 
 type Obj struct {
-	Val bool `customTag:"yourcase"`
+	Val   bool   `customTag:"yourcase"`
 	StVal string `customTag:"required"`
 }
 
 func CustomUnmarshaler(obj interface{}) error {
-	parser := func(tagVal string) (string, error) {
+	return tags.Parse(obj, `customTag`, func(tagVal string) (string, error) {
 		switch tagVal {
 		case `yourcase`:
 			return `true`, nil
 		default:
 			return ``, errCustom
 		}
-	}
-
-	return tags.Parse(obj, `customTag`, parser)
+	})
 }
 
 func CustomScanner(obj interface{}) error {
-	scanner := func(tagVal string, value interface{}) error {
+	return tags.Scan(obj, `customTag`, func(tagVal string, value interface{}) error {
 		v, ok := value.(string)
 		if !ok {
 			return nil
@@ -48,16 +46,14 @@ func CustomScanner(obj interface{}) error {
 		}
 
 		return nil
-	}
-
-	return tags.Scan(obj, `customTag`, scanner)
+	})
 }
 
 ```
 you get the values of a parent value in the string seperated by a dot:
 ```go
-parser := func(val string) (string, error) {
-	allvalues := strings.Split(value, `.`)
+err := tags.Scan(obj, `tagname`, func(val string) (string, error) {
+	allvalues := strings.Split(val, `.`)
 	childVal := allvalues[len(allvalues)-1]
 	...
 ```
