@@ -52,7 +52,7 @@ func CustomScanner(obj interface{}) error {
 ```
 you get the values of a parent value in the string seperated by a dot:
 ```go
-err := tags.Scan(obj, `tagname`, func(val string) (string, error) {
+err := tags.Parse(obj, `tagname`, func(val string) (string, error) {
 	allvalues := strings.Split(val, `.`)
 	childVal := allvalues[len(allvalues)-1]
 	...

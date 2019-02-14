@@ -75,11 +75,12 @@ func TestParse(t *testing.T) {
 	as.Error(err)
 	as.Equal(ErrPtr, err)
 
-	// test right senario
+	// test right senaria
+	ok.Sub.Ammount = 19 // shouldn't get overwritten
 	err = Parse(&ok, `tag`, testParser)
 	as.NoError(err)
 	as.Equal(st, ok.Name)
-	as.Equal(5, ok.Sub.Ammount)
+	as.Equal(19, ok.Sub.Ammount)
 	as.Equal([]bool{true, false, true}, ok.Slice)
 }
 
