@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/jobbitz/strct"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -73,7 +74,7 @@ func TestParse(t *testing.T) {
 	ok := testObj{}
 	err = Parse(ok, `tag`, testParser)
 	as.Error(err)
-	as.Equal(ErrPtr, err)
+	as.Equal(strct.ErrNoPtr, err)
 
 	// test right senaria
 	ok.Sub.Ammount = 19 // shouldn't get overwritten
