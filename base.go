@@ -1,7 +1,6 @@
 package tags
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/jobbitz/strct"
@@ -24,14 +23,13 @@ func parse(obj interface{}, tagname string, parser func(string) (string, error),
 			return nil
 		}
 
-		sv := fmt.Sprint(value.Interface())
-		if !override && !(sv == `false` || sv == `0` || sv == `[]` || sv == ``) {
-			return nil
-		}
-
 		val, err := parser(tagVal)
 		if err != nil {
 			return err
+		}
+
+		if override {
+			return strct.ParseHard(val, value)
 		}
 
 		return strct.Parse(val, value)
