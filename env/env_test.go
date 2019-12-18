@@ -1,3 +1,5 @@
+// Copyright 2019 Job Stoit. All rights reserved.
+
 package env
 
 import (
@@ -30,9 +32,6 @@ func TestUnmarshal(t *testing.T) {
 	as.NoError(os.Setenv(`NAME`, name))
 	as.NoError(os.Setenv(`HAPPY`, strconv.FormatBool(happy)))
 
-	defer os.Unsetenv(`NAME`)
-	defer os.Unsetenv(`HAPPY`)
-
 	// Marshaling the test config
 	conf := testConf{}
 	as.NoError(Unmarshal(&conf))
@@ -40,4 +39,7 @@ func TestUnmarshal(t *testing.T) {
 	// Testing the correctness of the marshaler
 	as.Equal(name, conf.Name)
 	as.Equal(happy, conf.Sub.Happy)
+
+	os.Unsetenv(`NAME`)
+	os.Unsetenv(`HAPPY`)
 }
