@@ -1,6 +1,6 @@
 # Tags
 [![GoDoc](https://godoc.org/github.com/jobstoit/tags?status.svg)](https://godoc.org/github.com/jobstoit/tags)
-[![Build Status](https://travis-ci.com/jobbitz/tags.svg?branch=master)](https://travis-ci.com/jobbitz/tags)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fjobstoit%2Ftags%2Fbadge&style=flat)](https://actions-badge.atrox.dev/jobstoit/tags/goto)
 
 An interface package for parsing tags in structs simplifying tag based golang reflections
 
