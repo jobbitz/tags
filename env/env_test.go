@@ -23,7 +23,7 @@ type subObj struct {
 }
 
 // TestMarshal tests the marshal function
-func TestUnmarshal(t *testing.T) {
+func TestParse(t *testing.T) {
 	as := assert.New(t)
 
 	name, happy := `test`, true
@@ -34,7 +34,7 @@ func TestUnmarshal(t *testing.T) {
 
 	// Marshaling the test config
 	conf := testConf{}
-	as.NoError(Unmarshal(&conf))
+	as.NoError(Parse(&conf))
 
 	// Testing the correctness of the marshaler
 	as.Equal(name, conf.Name)

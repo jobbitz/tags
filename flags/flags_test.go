@@ -18,7 +18,7 @@ func TestUnmarshal(t *testing.T) {
 	os.Args = []string{`app`, `-driver`, `postgres`, `-p`, `8080`, `-d`}
 
 	obj := new(testObj)
-	if err := Unmarshal(obj); err != nil {
+	if err := Parse(obj); err != nil {
 		t.Error(err)
 	}
 

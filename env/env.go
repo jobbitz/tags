@@ -13,7 +13,7 @@
 //   func main() {
 //        conf := new(dbConfig)
 //
-//        if err := env.Unmarshal(conf); err != nil {
+//        if err := env.Parse(conf); err != nil {
 //            ...
 //
 package env
@@ -21,11 +21,11 @@ package env
 import (
 	"os"
 
-	"github.com/jobbitz/tags"
+	"github.com/jobstoit/tags"
 )
 
-// Unmarshal reads the object and sets the properties to
-func Unmarshal(obj interface{}) (err error) {
+// Parse reads the object and sets the properties to
+func Parse(obj interface{}) error {
 	return tags.Parse(obj, `env`, func(in string) (string, error) {
 		return os.Getenv(in), nil
 	})

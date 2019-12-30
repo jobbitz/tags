@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/jobbitz/strct"
+	"github.com/jobstoit/strct"
 	"github.com/stretchr/testify/assert"
 )
 

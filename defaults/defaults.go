@@ -1,6 +1,6 @@
 package defaults
 
-import "github.com/jobbitz/tags"
+import "github.com/jobstoit/tags"
 
 // Parse parses the given defaults from the default tag of a struct property
 func Parse(obj interface{}) error {

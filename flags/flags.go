@@ -1,5 +1,21 @@
 // Copyright 2020 Job Stoit. All rights reserved.
 
+// Package flags is for parsing execution flags.
+//
+// Usage
+//
+// Create a struct that requires a flag and parse:
+//   type Config struct {
+//       ConnectionString string `flag:"cs"`
+//       Driver           string `flag:"driver"`
+//   }
+//
+//   func main() {
+//       conf := new(Config)
+//
+//       if err := flags.Parse(conf); err != nil {
+//           ...
+//
 package flags
 
 import (
@@ -11,9 +27,9 @@ import (
 	"github.com/jobstoit/strct"
 )
 
-// Unmarshal gets the tag and adds it to the property if set.
+// Parse gets the tag and adds it to the property if set.
 // Please note that flags overwrite previous values
-func Unmarshal(obj interface{}) error {
+func Parse(obj interface{}) error {
 	return strct.Scan(obj, func(field reflect.StructField, value *reflect.Value) error {
 		tagVal := field.Tag.Get(`flag`)
 		if tagVal == `` {

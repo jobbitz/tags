@@ -34,7 +34,7 @@ package tags
 import (
 	"reflect"
 
-	"github.com/jobbitz/strct"
+	"github.com/jobstoit/strct"
 )
 
 // Parse parses the given tag values using the given parser
