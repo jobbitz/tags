@@ -4,6 +4,8 @@ github.com/jobbitz/strct v0.0.0-20190310141419-b37bf6c939c2 h1:VzWV1ZItL0Z8yn47f
 github.com/jobbitz/strct v0.0.0-20190310141419-b37bf6c939c2/go.mod h1:9UnnrAkM5A5YyDKqXKmobMtPWrNhl7mZA771K0XTx7Q=
 github.com/jobbitz/tags v1.1.5 h1:J6jc1DdvyTMKtD6aAlZpFOvtLyW1JAyPSw8+/7SoDiE=
 github.com/jobbitz/tags v1.1.5/go.mod h1:WPDkfo5vcJbmZ6DjHvYn5uzrFfBfiVM8aCagVZl3PjE=
+github.com/jobstoit/strct v0.0.0-20191218105026-a94e541900b0 h1:LVuJ3xZ4Ymjswd1BIZxBO0OgdFYpVn3BNJr7DZKGvno=
+github.com/jobstoit/strct v0.0.0-20191218105026-a94e541900b0/go.mod h1:MVe6z8swpKaWz4F/eLqSttJx8apQ7hUMOwHhseilMg4=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
