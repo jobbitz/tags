@@ -8,14 +8,21 @@ import (
 )
 
 type testObj struct {
-	Driver string `flag:"driver"`
-	Port   int    `flag:"p"`
-	Demaon bool   `flag:"d"`
-	Empty  string `flag:"empty"`
+	Driver string   `flag:"driver"`
+	Port   int      `flag:"p"`
+	Demaon bool     `flag:"d"`
+	Empty  string   `flag:"empty"`
+	Args   []string `flag:"*"`
 }
 
 func TestUnmarshal(t *testing.T) {
-	os.Args = []string{`app`, `-driver`, `postgres`, `-p`, `8080`, `-d`}
+	os.Args = []string{
+		`app`,
+		`-driver`, `postgres`,
+		`-p`, `8080`,
+		`-d`,
+		`Arg1`, `Arg2`, `Arg3`, `Arg4`,
+	}
 
 	obj := new(testObj)
 	if err := Parse(obj); err != nil {
@@ -38,4 +45,7 @@ func TestUnmarshal(t *testing.T) {
 		t.Error(`empty should not be set`)
 	}
 
+	if len(obj.Args) < 4 {
+		t.Errorf("Args not set: %q\n", obj.Args)
+	}
 }
