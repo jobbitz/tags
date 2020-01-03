@@ -15,7 +15,7 @@ type testObj struct {
 	Args   []string `flag:"*"`
 }
 
-func TestUnmarshal(t *testing.T) {
+func TestParse(t *testing.T) {
 	os.Args = []string{
 		`app`,
 		`-driver`, `postgres`,
@@ -45,7 +45,28 @@ func TestUnmarshal(t *testing.T) {
 		t.Error(`empty should not be set`)
 	}
 
-	if len(obj.Args) < 4 {
+	if len(obj.Args) != 4 {
 		t.Errorf("Args not set: %q\n", obj.Args)
 	}
 }
+
+//func ExampleParse() {
+//	// Input: app -p 8080 -driver postgres arg1 arg2 arg3
+//	os.Args = []string{`app`, `-p`, `8080`, `-driver`, `postgres`, `arg1`, `arg2`, `arg3`}
+//
+//	type Config struct {
+//		Port               int      `flag:"p"`
+//		DBConnectionString string   `flag:"cs"`
+//		DBDriver           string   `flag:"driver"`
+//		Args               []string `flag:"*"`
+//	}
+//
+//	c := new(Config)
+//	if err := Parse(c); err != nil {
+//		panic(err)
+//	}
+//
+//	fmt.Printf("port: %d, connection string: '%s', driver: '%s', args: %q\n", c.Port, c.DBConnectionString, c.DBDriver, c.Args)
+//	// Output:
+//	// port: 8080, connection string '', driver: 'postgres', args: ["arg1" "arg2" "arg3"]
+//}

@@ -8,7 +8,7 @@
 //   type Config struct {
 //       ConnectionString string   `flag:"cs"`
 //       Driver           string   `flag:"driver"`
-//       Args             []string `flag:"*"
+//       Args             []string `flag:"*"`
 //   }
 //
 //   func main() {
@@ -27,21 +27,48 @@ import (
 	"github.com/jobstoit/strct"
 )
 
-var (
+var mainSet Set
+
+// Parse returns the
+func Parse(obj interface{}) error {
+	if !mainSet.parsed {
+		mainSet.args = os.Args[1:]
+	}
+	return mainSet.Parse(obj)
+}
+
+// Parsed returns true if any flags have been parsed
+func Parsed() bool {
+	return mainSet.Parsed()
+}
+
+// Args returns the remaining arguments
+func Args() []string {
+	return mainSet.Args()
+}
+
+// Set contains a new set of flags with the given arguments
+type Set struct {
 	args    []string
 	argPtrs []*reflect.Value
 	parsed  bool
-)
+}
+
+// New creates a new FlagSet
+func New(args []string) *Set {
+	x := new(Set)
+	x.args = args
+	return x
+}
 
 // Parse gets the tag and adds it to the property if set.
 // Please note that flags overwrite previous values
-func Parse(obj interface{}) error {
-	if !parsed {
-		args = os.Args[1:]
-		parsed = true
+func (x *Set) Parse(obj interface{}) error {
+	if !x.parsed {
+		x.parsed = true
 	}
 
-	defer parseArgsToPtr()
+	defer x.parseArgsToPtr()
 
 	return strct.Scan(obj, func(field reflect.StructField, value *reflect.Value) error {
 		tagVal := field.Tag.Get(`flag`)
@@ -50,11 +77,11 @@ func Parse(obj interface{}) error {
 		}
 
 		if tagVal == `*` { // parse args
-			argPtrs = append(argPtrs, value)
+			x.argPtrs = append(x.argPtrs, value)
 			return nil
 		}
 
-		match := matchArg(tagVal, value.Kind() == reflect.Bool)
+		match := x.matchArg(tagVal, value.Kind() == reflect.Bool)
 		if match == `` {
 			return nil
 		}
@@ -64,59 +91,61 @@ func Parse(obj interface{}) error {
 }
 
 // Parsed returns if any flags have been parsed
-func Parsed() bool {
-	return parsed
+func (x Set) Parsed() bool {
+	return x.parsed
 }
 
 // Args returns the remainder of the arguments
-func Args() []string {
-	return args
+func (x Set) Args() []string {
+	return x.args
 }
 
-func parseArgsToPtr() {
-	for _, ptr := range argPtrs {
+func (x *Set) parseArgsToPtr() {
+	for _, ptr := range x.argPtrs {
 		if ptr != nil &&
 			ptr.Kind() == reflect.Slice {
-			ptr.Set(reflect.ValueOf(args))
+			ptr.Set(reflect.ValueOf(x.args))
 		}
 	}
 }
 
-func matchArg(fl string, isBool bool) string {
+func (x *Set) matchArg(fl string, isBool bool) string {
 	reg := regexp.MustCompile(`[\-]{1,2}` + fl)
 	var key, value string
 
-	for i, arg := range args {
+	for i, arg := range x.args {
 		if reg.MatchString(arg) {
 			key = arg
-			if i+1 < len(args) {
-				value = args[i+1]
+			if len(x.args) > i {
+				value = x.args[i+1]
 				break
 			}
 		}
 	}
 
 	if isBool && !regexp.MustCompile(`^(true|false|0|1|TRUE|FALSE)$`).MatchString(value) {
-		args = remove(args, key)
+		x.args = remove(x.args, key)
 		return `true`
 	}
 
 	if value != `` {
-		args = remove(args, key, value)
+		x.args = remove(x.args, key, value)
 	}
 
 	return value
 }
 
 func remove(ssl []string, items ...string) []string {
-	if len(ssl) < 1 || len(items) < 1 {
+	if len(items) < 1 {
 		return ssl
 	}
+
 	for i, s := range ssl {
 		if s == items[0] {
 			ssl = append(ssl[:i], ssl[i+1:]...)
 			break
 		}
 	}
+
 	return remove(ssl, items[1:]...)
 }
