@@ -20,14 +20,14 @@ func NewEncoder(r *http.Request) *Encoder {
 	x := new(Encoder)
 
 	x.r = r
-	x.r.Header.Add(`Content-Type`, contentType)
+	x.r.Header.Add(contentTypeKey, contentTypeVal)
 
 	return x
 }
 
 // Encode writes the values of the given object into the request form
 func (x Encoder) Encode(obj interface{}) error {
-	return tags.Scan(obj, `form`, func(key string, val interface{}) error {
+	return tags.Scan(obj, tag, func(key string, val interface{}) error {
 		x.r.Form.Add(key, fmt.Sprint(val))
 		return nil
 	})

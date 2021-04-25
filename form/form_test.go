@@ -1,3 +1,5 @@
+// Copyright 2021 Job Stoit. All rights reserved.
+
 package form
 
 import (
@@ -32,7 +34,7 @@ func TestEncode(t *testing.T) {
 	sendObj.Age = age
 
 	as.NoError(Encode(r, &sendObj))
-	as.Equal(contentType, r.Header.Get(`Content-Type`))
+	as.Equal(contentTypeVal, r.Header.Get(contentTypeKey))
 	as.Equal(name, r.Form.Get(`username`))
 	as.Equal(fmt.Sprint(age), r.Form.Get(`age`))
 }
@@ -55,7 +57,7 @@ func TestDecode(t *testing.T) {
 	as.Equal(``, recObj.Name)
 	as.Equal(0, recObj.Age)
 
-	r.Header.Set(`Content-Type`, contentType)
+	r.Header.Set(contentTypeKey, contentTypeVal)
 	as.NoError(Decode(r, &recObj))
 	as.Equal(name, recObj.Name)
 	as.Equal(age, recObj.Age)
