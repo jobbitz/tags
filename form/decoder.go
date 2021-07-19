@@ -25,10 +25,6 @@ func NewDecoder(r *http.Request) *Decoder {
 // Decode parses the form values into the given object or returns an error
 // if the Content-Type header is not set or if the parsing fails
 func (x Decoder) Decode(obj interface{}) error {
-	if x.r.Header.Get(contentTypeKey) != contentTypeVal {
-		return ErrNoHeaders
-	}
-
 	return tags.Parse(obj, tag, func(in string) (string, error) {
 		return x.r.FormValue(in), nil
 	})

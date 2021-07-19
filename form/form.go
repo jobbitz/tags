@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	contentTypeVal = `multipart/form-data`
+	contentTypeVal = `application/x-www-form-urlencoded`
 	contentTypeKey = `Content-Type`
 
 	tag = `form`
@@ -32,14 +32,14 @@ const (
 // ErrNoHeaders is returned if the request doesnt contain the right content type for parsing the form
 var ErrNoHeaders = fmt.Errorf("error request doesnt contain the Content-Type: '%s'", contentTypeVal)
 
-// Decode parses the form values into the given object or returns an error
+// Umarshal parses the form values into the given object or returns an error
 // if the Content-Type header is not set or if the parsing fails
-func Decode(r *http.Request, obj interface{}) error {
+func Unmarshal(r *http.Request, obj interface{}) error {
 	return NewDecoder(r).Decode(obj)
 }
 
-// Encoder writes the given data to the the form and adds the Content-Type
+// Marshal writes the given data to the the form and adds the Content-Type
 // header to the request
-func Encode(r *http.Request, obj interface{}) error {
+func Marshal(r *http.Request, obj interface{}) error {
 	return NewEncoder(r).Encode(obj)
 }
