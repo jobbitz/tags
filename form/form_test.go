@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"git.fuyu.moe/Fuyu/assert"
 )
 
 type testObj struct {
@@ -23,7 +23,8 @@ func TestEncode(t *testing.T) {
 	buf := new(bytes.Buffer)
 	r, err := http.NewRequest(`POST`, `example.com`, buf)
 	if err != nil {
-		as.Fail(`failed to create the request`)
+		t.Error(`failed to create the request`)
+		t.Fail()
 	}
 	r.Form = url.Values{}
 
@@ -33,10 +34,10 @@ func TestEncode(t *testing.T) {
 	sendObj.Name = name
 	sendObj.Age = age
 
-	as.NoError(Encode(r, &sendObj))
-	as.Equal(contentTypeVal, r.Header.Get(contentTypeKey))
-	as.Equal(name, r.Form.Get(`username`))
-	as.Equal(fmt.Sprint(age), r.Form.Get(`age`))
+	as.NoError(Marshal(r, &sendObj))
+	as.Eq(contentTypeVal, r.Header.Get(contentTypeKey))
+	as.Eq(name, r.Form.Get(`username`))
+	as.Eq(fmt.Sprint(age), r.Form.Get(`age`))
 }
 
 func TestDecode(t *testing.T) {
@@ -44,7 +45,8 @@ func TestDecode(t *testing.T) {
 
 	r, err := http.NewRequest(`POST`, `example.com`, nil)
 	if err != nil {
-		as.Fail(`failed to create the request`)
+		t.Error(`failed to create the request`)
+		t.Fail()
 	}
 	r.Form = url.Values{}
 
@@ -53,12 +55,8 @@ func TestDecode(t *testing.T) {
 	r.Form.Add(`age`, fmt.Sprint(age))
 
 	var recObj testObj
-	as.Error(Decode(r, &recObj))
-	as.Equal(``, recObj.Name)
-	as.Equal(0, recObj.Age)
-
 	r.Header.Set(contentTypeKey, contentTypeVal)
-	as.NoError(Decode(r, &recObj))
-	as.Equal(name, recObj.Name)
-	as.Equal(age, recObj.Age)
+	as.NoError(Unmarshal(r, &recObj))
+	as.Eq(name, recObj.Name)
+	as.Eq(age, recObj.Age)
 }

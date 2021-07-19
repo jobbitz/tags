@@ -3,7 +3,7 @@ package defaults
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"git.fuyu.moe/Fuyu/assert"
 )
 
 type person struct {
@@ -23,9 +23,9 @@ func TestDefault(t *testing.T) {
 	ps := person{}
 
 	as.NoError(Parse(&ps))
-	as.Equal(`John Locke`, ps.Name)
-	as.Equal(`Picard`, ps.Surname)
-	as.Equal(50, ps.Age)
-	as.Equal(true, ps.Rank.Active)
-	as.Equal(`Ensign`, ps.Rank.Name)
+	as.Eq(`John Locke`, ps.Name)
+	as.Eq(`Picard`, ps.Surname)
+	as.Eq(50, ps.Age)
+	as.Eq(true, ps.Rank.Active)
+	as.Eq(`Ensign`, ps.Rank.Name)
 }

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"testing"
+
+	"git.fuyu.moe/Fuyu/assert"
 )
 
 type testObj struct {
@@ -17,6 +19,7 @@ type testObj struct {
 }
 
 func TestParse(t *testing.T) {
+	as := assert.New(t)
 	os.Args = []string{
 		`app`,
 		`-driver`, `postgres`,
@@ -26,29 +29,13 @@ func TestParse(t *testing.T) {
 	}
 
 	obj := new(testObj)
-	if err := Parse(obj); err != nil {
-		t.Error(err)
-	}
+	as.NoError(Parse(obj))
 
-	if obj.Driver != `postgres` {
-		t.Error(`driver not parsed`)
-	}
-
-	if obj.Port != 8080 {
-		t.Error(`port not parsed`)
-	}
-
-	if obj.Demaon != true {
-		t.Error(`deamon not parsed`)
-	}
-
-	if obj.Empty != `` {
-		t.Error(`empty should not be set`)
-	}
-
-	if len(obj.Args) != 4 {
-		t.Errorf("Args not set: %q\n", obj.Args)
-	}
+	as.Eq(`postgres`, obj.Driver)
+	as.Eq(8080, obj.Port)
+	as.Eq(true, obj.Demaon)
+	as.Eq(``, obj.Empty)
+	as.Eq(4, len(obj.Args))
 
 	mainSet = Set{}
 }

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"git.fuyu.moe/Fuyu/assert"
 )
 
 // testConf is a test object
@@ -37,8 +37,8 @@ func TestParse(t *testing.T) {
 	as.NoError(Parse(&conf))
 
 	// Testing the correctness of the marshaler
-	as.Equal(name, conf.Name)
-	as.Equal(happy, conf.Sub.Happy)
+	as.Eq(name, conf.Name)
+	as.Eq(happy, conf.Sub.Happy)
 
 	os.Unsetenv(`NAME`)
 	os.Unsetenv(`HAPPY`)

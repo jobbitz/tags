@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
+	"git.fuyu.moe/Fuyu/assert"
 	"github.com/jobstoit/strct"
-	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -63,7 +63,7 @@ func TestParse(t *testing.T) {
 	nfok := notFound{}
 	err := Parse(&nfok, `tag`, testParser)
 	as.Error(err)
-	as.Equal(errNotFound, err)
+	as.Eq(errNotFound, err)
 
 	// test error on unparseble string
 	npok := notParseble{}
@@ -74,15 +74,17 @@ func TestParse(t *testing.T) {
 	ok := testObj{}
 	err = Parse(ok, `tag`, testParser)
 	as.Error(err)
-	as.Equal(strct.ErrNoPtr, err)
+	as.Eq(strct.ErrNoPtr, err)
 
 	// test right senaria
 	ok.Sub.Ammount = 19 // shouldn't get overwritten
 	err = Parse(&ok, `tag`, testParser)
 	as.NoError(err)
-	as.Equal(st, ok.Name)
-	as.Equal(19, ok.Sub.Ammount)
-	as.Equal([]bool{true, false, true}, ok.Slice)
+	as.Eq(st, ok.Name)
+	as.Eq(19, ok.Sub.Ammount)
+	as.Eq(true, ok.Slice[0])
+	as.Eq(false, ok.Slice[1])
+	as.Eq(true, ok.Slice[2])
 }
 
 func TestParseHard(t *testing.T) {
@@ -95,9 +97,11 @@ func TestParseHard(t *testing.T) {
 	}
 
 	as.NoError(ParseHard(&obj, `tag`, testParser))
-	as.Equal(st, obj.Name)
-	as.Equal(5, obj.Sub.Ammount)
-	as.Equal([]bool{true, false, true}, obj.Slice)
+	as.Eq(st, obj.Name)
+	as.Eq(5, obj.Sub.Ammount)
+	as.Eq(true, obj.Slice[0])
+	as.Eq(false, obj.Slice[1])
+	as.Eq(true, obj.Slice[2])
 }
 
 func TestScan(t *testing.T) {
@@ -127,5 +131,5 @@ func TestScan(t *testing.T) {
 	obj.Values = ``
 	err = Scan(&obj, `validate`, scanner)
 	as.Error(err)
-	as.Equal(errReq, err)
+	as.Eq(errReq, err)
 }
